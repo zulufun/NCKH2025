@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button, Table } from "antd";
 
 interface Packet {
@@ -9,16 +9,20 @@ interface Packet {
 const ThongKeCount: React.FC = () => {
   const [packets, setPackets] = useState<Packet[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const websocketRef = useRef<WebSocket | null>(null); // Sử dụng useRef để lưu trữ WebSocket
 
   useEffect(() => {
-    let websocket: WebSocket | null = null;
-
     if (isGenerating) {
-      websocket = new WebSocket("ws://localhost:8000/ws");
+      if (websocketRef.current) {
+        console.warn("WebSocket connection already established");
+        return; // Tránh tạo nhiều kết nối
+      }
+
+      const websocket = new WebSocket("ws://localhost:8000/ws");
+      websocketRef.current = websocket;
 
       websocket.onmessage = (event: MessageEvent) => {
         try {
-          // Cập nhật thông tin gói tin vào mảng
           const newPacket: Packet = {
             key: packets.length + 1,
             text: event.data,
@@ -31,16 +35,25 @@ const ThongKeCount: React.FC = () => {
 
       websocket.onclose = () => {
         console.log("WebSocket closed");
+        websocketRef.current = null; // Đặt lại ref khi kết nối đóng
       };
 
       websocket.onerror = (error) => {
         console.error("WebSocket error:", error);
       };
+    } else {
+      // Ngừng kết nối khi không còn cần thiết
+      if (websocketRef.current) {
+        websocketRef.current.close();
+        websocketRef.current = null;
+      }
     }
 
+    // Cleanup function
     return () => {
-      if (websocket) {
-        websocket.close();
+      if (websocketRef.current) {
+        websocketRef.current.close();
+        websocketRef.current = null;
       }
     };
   }, [isGenerating, packets]);

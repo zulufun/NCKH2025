@@ -17,12 +17,15 @@ app.add_middleware(
 
 send_data = False
 packet_queue = queue.Queue()  # Hàng đợi để lưu gói tin
+packet_counter = 0  # Đếm số lượng gói tin đã gửi
 
 def capture_packets(interface, packet_queue):
     def packet_handler(packet):
-        # Thêm thông tin gói tin vào hàng đợi
+        global packet_counter
+        # Thêm thông tin gói tin vào hàng đợi và biến text
         packet_info = packet.summary()
-        packet_queue.put(packet_info)
+        packet_queue.put((packet_counter, packet_info))
+        packet_counter += 1
 
     def start_sniffing():
         print(f"Bắt đầu bắt gói tin từ interface: {interface}\n")
@@ -33,6 +36,9 @@ def capture_packets(interface, packet_queue):
     capture_thread.start()
     return capture_thread
 
+# Khởi động việc bắt gói tin
+capture_thread = capture_packets('Ethernet', packet_queue)
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     global send_data
@@ -42,10 +48,11 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             if send_data:
                 while not packet_queue.empty():
-                    # Gửi từng thông tin gói tin từ hàng đợi qua WebSocket
-                    packet_info = packet_queue.get()
-                    await websocket.send_text(packet_info)
-                await asyncio.sleep(1)  # Gửi dữ liệu mỗi giây để giảm tải cho server
+                    # Lấy thông tin gói tin từ hàng đợi
+                    packet_counter, packet_info = packet_queue.get()
+                    # Gửi thông tin gói tin qua WebSocket
+                    await websocket.send_text(f"{packet_counter}: {packet_info}")
+                    await asyncio.sleep(0.1)  # Giảm tải cho server
             else:
                 await asyncio.sleep(1)
     except Exception as e:
@@ -55,8 +62,6 @@ async def websocket_endpoint(websocket: WebSocket):
 async def start_data_generation():
     global send_data
     send_data = True
-    # Khởi động việc bắt gói tin
-    capture_thread = capture_packets('Ethernet', packet_queue)
     return {"status": "Data generation started"}
 
 @app.get("/stop")
