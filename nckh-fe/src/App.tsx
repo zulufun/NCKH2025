@@ -8,13 +8,13 @@ import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MainLayout from "./layouts/Layout";
 import NotFound from "./pages/not-found/NotFound";
-import ThongKeCount from "./pages/thong-ke-count";
+import ThuThapPacket from "./pages/thu-thap-packet";
 import ErrorPage from "./pages/error-page/ErrorPage";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ThongKeTime from "./pages/thong-ke-time";
 
-import ChatBoxAI from "./pages/aichatbox";
+
 function App() {
   return (
     <Provider store={store}>
@@ -41,11 +41,15 @@ function App() {
                   errorElement={<ErrorPage />}
                 >
                   <Route
-                    path={RouterLinks.THONG_KE_COUNT}
-                    element={<ThongKeCount />}
+                    path={RouterLinks.THU_THAP_PACKET}
+                    element={<ThuThapPacket />}
                     errorElement={<ErrorPage />}
                   ></Route>
-                  
+                  <Route
+                    path={RouterLinks.THONG_KE_TIME}
+                    element={<ThongKeTime />}
+                    errorElement={<ErrorPage />}
+                  ></Route>
                 </Route>
               </Routes>
             </div>

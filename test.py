@@ -1,34 +1,27 @@
-from scapy.all import sniff
-import threading
-import queue
+import psutil
+import time
 
-def capture_packets(interface, packet_queue):
-    def start_sniffing():
-        print(f"Bắt đầu bắt gói tin từ interface: {interface}\n")
-        sniff(iface=interface, prn=lambda pkt: packet_queue.put(pkt.summary()))
 
-    # Tạo và khởi chạy thread để bắt gói tin
-    capture_thread = threading.Thread(target=start_sniffing)
-    capture_thread.start()
-    return capture_thread
+def monitor_network(interval=1):
+    # Lấy thông tin mạng ban đầu
+    prev_net_io = psutil.net_io_counters()
 
-def print_packets(packet_queue):
-    text = ""  # Biến để lưu thông tin gói tin
     while True:
-        packet_info = packet_queue.get()
-        text += f"Packet: {packet_info}\n"  # Thêm thông tin gói tin vào biến text
-        print(text)  # In ra nội dung của biến text
+        time.sleep(interval)
+        # Lấy thông tin mạng hiện tại
+        net_io = psutil.net_io_counters()
 
-def main():
-    interface = 'Ethernet'
-    packet_queue = queue.Queue()
-    # Khởi động các thread
-    capture_thread = capture_packets(interface, packet_queue)
-    print_thread = threading.Thread(target=print_packets, args=(packet_queue,))
-    print_thread.start()
+        # Tính toán lưu lượng truyền gửi và nhận trong khoảng thời gian
+        bytes_sent = net_io.bytes_sent - prev_net_io.bytes_sent
+        bytes_recv = net_io.bytes_recv - prev_net_io.bytes_recv
 
-    capture_thread.join()  # Chờ đến khi thread bắt gói tin hoàn tất
-    print_thread.join()  # Chờ đến khi thread in gói tin hoàn tất
+        # In ra thông tin lưu lượng
+        print(f"Bytes sent in last {interval} seconds: {bytes_sent}")
+        print(f"Bytes received in last {interval} seconds: {bytes_recv}")
+
+        # Cập nhật thông tin mạng trước đó
+        prev_net_io = net_io
+
 
 if __name__ == "__main__":
-    main()
+    monitor_network()

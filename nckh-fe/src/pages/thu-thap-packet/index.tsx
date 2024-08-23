@@ -6,7 +6,7 @@ interface Packet {
   text: string;
 }
 
-const ThongKeCount: React.FC = () => {
+const ThuThapPacket: React.FC = () => {
   const [packets, setPackets] = useState<Packet[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const websocketRef = useRef<WebSocket | null>(null); // Sử dụng useRef để lưu trữ WebSocket
@@ -125,4 +125,4 @@ const ThongKeCount: React.FC = () => {
   );
 };
 
-export default ThongKeCount;
+export default ThuThapPacket;

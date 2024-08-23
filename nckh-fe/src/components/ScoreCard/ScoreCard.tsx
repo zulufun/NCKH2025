@@ -30,12 +30,12 @@ const ScoreCard: React.FC<Props> = ({ dataScore }) => {
         <StatisticCard.Group direction={responsive ? "column" : "row"}>
           <StatisticCard
             statistic={{
-              title: "Số lượng ngân hàng đã thu thập",
+              title: "Số lần thu thập",
               value: total,
               icon: (
                 <img
                   style={imgStyle}
-                  src="https://cdn-icons-png.freepik.com/256/8176/8176383.png?semt=ais_hybrid"
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTM5iLBdLgNQg7rKzxbvGBd9i_1jL7XOGLBMbwSaQTKbvT1jocqgVGWFfv_HotRC60_Kec&usqp=CAU"
                   alt="icon"
                 />
               ),
@@ -56,7 +56,7 @@ const ScoreCard: React.FC<Props> = ({ dataScore }) => {
           />
           <StatisticCard
             statistic={{
-              title: "Ngân hàng có nhiều chi nhánh nhất",
+              title: "Số logs cảnh báo",
               value: max,
               icon: (
                 <img
@@ -69,12 +69,12 @@ const ScoreCard: React.FC<Props> = ({ dataScore }) => {
           />
           <StatisticCard
             statistic={{
-              title: "Ngân hàng có ít chi nhánh nhất",
+              title: "Số lần bị tấn công",
               value: min,
               icon: (
                 <img
                   style={imgStyle}
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThaFWy6PLrgdTuXz-nCJJ5L7uIBbQHO0jqTBUegtpQMA&s"
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnRg_eUuZFDnOJ9i2Oan2y5cJZPsnd1WFFuw&s"
                   alt="icon"
                 />
               ),

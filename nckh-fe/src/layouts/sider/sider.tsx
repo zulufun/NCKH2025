@@ -10,7 +10,7 @@ import { RouterLinks } from "../../const/RouterLinks";
 
 const menuItems = [
   {
-    key: "thong-ke",
+    key: "thu-thap",
     label: "Thu Thập dữ liệu",
     icon: (
       <CheckCircleOutlined
@@ -19,8 +19,24 @@ const menuItems = [
     ),
     children: [
       {
-        key: RouterLinks.THONG_KE_COUNT,
+        key: RouterLinks.THU_THAP_PACKET,
         label: "Test thu thập dữ liệu",
+      },
+      
+    ],
+  },
+  {
+    key: "thong-ke",
+    label: "Thống kê dữ liệu",
+    icon: (
+      <LineChartOutlined
+        style={{ fontSize: "1.3rem", paddingRight: "0.5rem" }}
+      />
+    ),
+    children: [
+      {
+        key: RouterLinks.THONG_KE_TIME,
+        label: "Thống kê chung",
       },
       
     ],
