@@ -1,28 +1,30 @@
-// Thu thập dữ liệu khi người dùng truy cập vào Facebook
-if (window.location.href.includes("facebook.com")) {
-    const userEmail = "user@gmail.com"; // Ví dụ, bạn có thể lấy thông tin người dùng qua API của ứng dụng
-    const currentUrl = window.location.href;
-    const accessTime = new Date().toISOString();
-
-    // Gửi dữ liệu về server qua API
-    fetch("http://localhost:8000/log_access/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            email: userEmail,
-            url: currentUrl,
-            access_time: accessTime,
-            additional_data: {
-                browser: navigator.userAgent
-            }
-        })
+// Hàm để gửi dữ liệu đến server
+function sendDataToServer(data) {
+    fetch('http://localhost:8000/collect', { // Đổi URL thành URL của server bạn
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
     })
     .then(response => response.json())
-    .then(data => console.log("Data logged:", data))
-    .catch(error => console.error("Error logging data:", error));
-
-    // Hiển thị cảnh báo
-    alert("Bạn đang truy cập vào Facebook!");
-}
+    .then(data => console.log('Data sent successfully:', data))
+    .catch((error) => console.error('Error:', error));
+  }
+  
+  // Lắng nghe tin nhắn từ background script
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === "collectUserData") {
+      // Thu thập thông tin người dùng (giả sử sử dụng dữ liệu từ DOM)
+      const userData = {
+        date: new Date().toISOString(),
+        url: window.location.href,
+        // Có thể thu thập thêm thông tin từ DOM nếu cần
+        email: document.querySelector('input[name="email"]')?.value || 'unknown',
+      };
+  
+      // Gửi dữ liệu đến server
+      sendDataToServer(userData);
+    }
+  });
+  

@@ -6,6 +6,8 @@ import threading
 import queue
 from pymongo import MongoClient
 from datetime import datetime
+from pydantic import BaseModel
+
 
 app = FastAPI()
 
@@ -19,7 +21,7 @@ app.add_middleware(
 
 # Kết nối MongoDB
 client = MongoClient('mongodb://localhost:27017/')
-db = client['access_data_db']
+db = client['nckh2025']
 collection = db['access_logs']
 
 send_data = False
@@ -77,17 +79,16 @@ async def stop_data_generation():
     send_data = False
     return {"status": "Data generation stopped"}
 
-@app.post("/log_access/")
-async def log_access(request: Request):
-    data = await request.json()
-    access_log = {
-        "user_email": data.get("email", "unknown"),
-        "url": data["url"],
-        "access_time": datetime.now(),
-        "additional_data": data.get("additional_data", {})
-    }
-    collection.insert_one(access_log)
-    return {"status": "success", "message": "Data logged successfully"}
+class UserData(BaseModel):
+    date: str
+    url: str
+    email: str
+
+@app.post("/collect")
+async def collect_user_data(data: UserData):
+    # Lưu dữ liệu vào MongoDB
+    collection.insert_one(data.dict())
+    return {"status": "success"}
 
 # Lưu log vào MongoDB sau khi nhận được dữ liệu từ WebSocket
 @app.post("/log_websocket_packet/")
