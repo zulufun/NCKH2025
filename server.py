@@ -1,9 +1,11 @@
 import asyncio
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, Request
 from fastapi.middleware.cors import CORSMiddleware
 from scapy.all import sniff
 import threading
 import queue
+from pymongo import MongoClient
+from datetime import datetime
 
 app = FastAPI()
 
@@ -14,6 +16,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Kết nối MongoDB
+client = MongoClient('mongodb://localhost:27017/')
+db = client['access_data_db']
+collection = db['access_logs']
 
 send_data = False
 packet_queue = queue.Queue()  # Hàng đợi để lưu gói tin
@@ -69,3 +76,26 @@ async def stop_data_generation():
     global send_data
     send_data = False
     return {"status": "Data generation stopped"}
+
+@app.post("/log_access/")
+async def log_access(request: Request):
+    data = await request.json()
+    access_log = {
+        "user_email": data.get("email", "unknown"),
+        "url": data["url"],
+        "access_time": datetime.now(),
+        "additional_data": data.get("additional_data", {})
+    }
+    collection.insert_one(access_log)
+    return {"status": "success", "message": "Data logged successfully"}
+
+# Lưu log vào MongoDB sau khi nhận được dữ liệu từ WebSocket
+@app.post("/log_websocket_packet/")
+async def log_websocket_packet(packet_data: dict):
+    access_log = {
+        "packet_counter": packet_data["packet_counter"],
+        "packet_info": packet_data["packet_info"],
+        "logged_time": datetime.now()
+    }
+    collection.insert_one(access_log)
+    return {"status": "success", "message": "Packet logged successfully"}
