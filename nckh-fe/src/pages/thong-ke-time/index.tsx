@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, Breadcrumb, Divider } from "antd";
-import ListPage from "./components/ListPage";
+// import ListPage from "./components/ListPage";
 import BarChar from "./components/BarChart";
-import LineChar from "./components/LineChar";
+// import LineChar from "./components/LineChar";
 import "./index.scss";
 import { postServices } from "../../utils/services/postService";
 
 import ScoreCard from './../../components/ScoreCard/ScoreCard';
 import MyPieChart from "../../components/PieChart/PieChart";
-import PercentAreaChart from "../../components/PercentAreaChart/PercentAreaChart";
+// import PercentAreaChart from "../../components/PercentAreaChart/PercentAreaChart";
 
 
 

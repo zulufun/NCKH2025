@@ -1,15 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Table } from "antd";
+import { Button, Table, Modal } from "antd";
 
 interface Packet {
   key: number;
-  text: string;
+  src_ip: string;
+  dst_ip: string;
+  protocol: string;
+  details: string;
 }
 
 const ThuThapPacket: React.FC = () => {
   const [packets, setPackets] = useState<Packet[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const websocketRef = useRef<WebSocket | null>(null); // Sử dụng useRef để lưu trữ WebSocket
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedPacket, setSelectedPacket] = useState<string | null>(null);
+  const websocketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
     if (isGenerating) {
@@ -23,9 +28,13 @@ const ThuThapPacket: React.FC = () => {
 
       websocket.onmessage = (event: MessageEvent) => {
         try {
+          const packetData = JSON.parse(event.data);
           const newPacket: Packet = {
-            key: packets.length + 1,
-            text: event.data,
+            key: packetData.packet_counter,
+            src_ip: packetData.src_ip,
+            dst_ip: packetData.dst_ip,
+            protocol: packetData.protocol,
+            details: packetData.details,
           };
           setPackets((prevPackets) => [...prevPackets, newPacket]);
         } catch (error) {
@@ -35,28 +44,26 @@ const ThuThapPacket: React.FC = () => {
 
       websocket.onclose = () => {
         console.log("WebSocket closed");
-        websocketRef.current = null; // Đặt lại ref khi kết nối đóng
+        websocketRef.current = null;
       };
 
       websocket.onerror = (error) => {
         console.error("WebSocket error:", error);
       };
     } else {
-      // Ngừng kết nối khi không còn cần thiết
       if (websocketRef.current) {
         websocketRef.current.close();
         websocketRef.current = null;
       }
     }
 
-    // Cleanup function
     return () => {
       if (websocketRef.current) {
         websocketRef.current.close();
         websocketRef.current = null;
       }
     };
-  }, [isGenerating, packets]);
+  }, [isGenerating]);
 
   const handleStartGenerating = async () => {
     try {
@@ -84,6 +91,16 @@ const ThuThapPacket: React.FC = () => {
     }
   };
 
+  const handleRowClick = (record: Packet) => {
+    setSelectedPacket(record.details);
+    setModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setModalVisible(false);
+    setSelectedPacket(null);
+  };
+
   const columns = [
     {
       title: "No.",
@@ -91,9 +108,19 @@ const ThuThapPacket: React.FC = () => {
       render: (_: any, __: any, index: number) => index + 1,
     },
     {
-      title: "Packet Information",
-      dataIndex: "text",
-      key: "text",
+      title: "Source IP",
+      dataIndex: "src_ip",
+      key: "src_ip",
+    },
+    {
+      title: "Destination IP",
+      dataIndex: "dst_ip",
+      key: "dst_ip",
+    },
+    {
+      title: "Protocol",
+      dataIndex: "protocol",
+      key: "protocol",
     },
   ];
 
@@ -120,7 +147,18 @@ const ThuThapPacket: React.FC = () => {
         pagination={false}
         bordered
         size="small"
+        onRow={(record) => ({
+          onClick: () => handleRowClick(record),
+        })}
       />
+      <Modal
+        title="Packet Details"
+        visible={modalVisible}
+        onCancel={handleModalClose}
+        footer={null}
+      >
+        <pre>{selectedPacket}</pre>
+      </Modal>
     </div>
   );
 };
