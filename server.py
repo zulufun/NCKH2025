@@ -83,20 +83,22 @@ class UserData(BaseModel):
     date: str
     url: str
     email: str
+    username: str = 'unknown'
+    userAgent: str = 'unknown'
+    screenResolution: str = 'unknown'
+    referrer: str = 'unknown'
 
 @app.post("/collect")
 async def collect_user_data(data: UserData):
     # Lưu dữ liệu vào MongoDB
-    collection.insert_one(data.dict())
+    collection.insert_one(data.dict())  # Xóa await
     return {"status": "success"}
-
-# Lưu log vào MongoDB sau khi nhận được dữ liệu từ WebSocket
 @app.post("/log_websocket_packet/")
 async def log_websocket_packet(packet_data: dict):
     access_log = {
-        "packet_counter": packet_data["packet_counter"],
-        "packet_info": packet_data["packet_info"],
+        "packet_counter": packet_data.get("packet_counter"),
+        "packet_info": packet_data.get("packet_info"),
         "logged_time": datetime.now()
     }
-    collection.insert_one(access_log)
+    await collection.insert_one(access_log)
     return {"status": "success", "message": "Packet logged successfully"}
