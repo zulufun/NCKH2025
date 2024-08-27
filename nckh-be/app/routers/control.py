@@ -1,14 +1,23 @@
 from fastapi import APIRouter
-from ..services.packet_capture import send_data_handler
+from app.services.packet_capture import start_capture, stop_capture
+from app.models import UserData, collection
 
-router = APIRouter()
+control_router = APIRouter()
 
-@router.get("/start")
+@control_router.get("/start")
 async def start_data_generation():
-    send_data_handler.set_send_data(True)
-    return {"status": "Data generation started"}
+    return start_capture()
 
-@router.get("/stop")
+@control_router.get("/stop")
 async def stop_data_generation():
-    send_data_handler.set_send_data(False)
-    return {"status": "Data generation stopped"}
+    return stop_capture()
+
+@control_router.post("/collect")
+async def collect_user_data(data: UserData):
+    collection.insert_one(data.dict())
+    return {"status": "success"}
+
+@control_router.get("/api/thongke")
+async def get_statistics():
+    total_documents = collection.count_documents({})
+    return {"total_collections": total_documents}

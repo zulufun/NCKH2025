@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import websocket, control
+from .routers.control import control_router
+from .routers.websocket import websocket_router
 
 app = FastAPI()
 
@@ -12,10 +13,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(websocket.router)
-app.include_router(control.router)
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-# uvicorn app.main:app --reload
+app.include_router(control_router)
+app.include_router(websocket_router)
