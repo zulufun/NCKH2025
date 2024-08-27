@@ -25,6 +25,7 @@ const get = (bank_name: any) => {
     params: bank_name
   });
 };
+
 const savetodb = (bank_name: any, bank_data:any) => {
   // console.log("Test Api",bank_data);
   // let data = {"data":bank_data}

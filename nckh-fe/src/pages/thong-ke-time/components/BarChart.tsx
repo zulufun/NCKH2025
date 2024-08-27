@@ -11,7 +11,6 @@ const colors = [
   "yellow",
   "green",
   "gray",
-
   "blue",
   "brown",
   "cyan",
@@ -44,7 +43,7 @@ const BarChar: React.FC<Props> = (props) => {
     <BarChart
       // width="100%"
       // style={{width:}}
-      width={1800}
+      width={1000}
       height={400}
       data={dataThongKe}
       margin={{

@@ -30,7 +30,7 @@ const ScoreCard: React.FC<Props> = ({ dataScore }) => {
         <StatisticCard.Group direction={responsive ? "column" : "row"}>
           <StatisticCard
             statistic={{
-              title: "Số lần thu thập",
+              title: "Số collection",
               value: total,
               icon: (
                 <img
@@ -43,7 +43,7 @@ const ScoreCard: React.FC<Props> = ({ dataScore }) => {
           />
           <StatisticCard
             statistic={{
-              title: "Tổng số dữ liệu",
+              title: "Tổng số access_logs",
               value: documents,
               icon: (
                 <img

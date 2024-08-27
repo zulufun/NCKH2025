@@ -22,9 +22,12 @@ const ThongKeTime: React.FC = () => {
       .then((res) => {
         if (Array.isArray(res.data)) {
           const temp = res.data.map((item: any) => {
-            // console.log(item)
+            // Convert "YYYY-MM" to a readable month name
+            const date = new Date(item?.collection_name);
+            const monthName = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+  
             return {
-              name: item?.collection_name ,
+              name: monthName,
               count: item?.count,
             };
           });
