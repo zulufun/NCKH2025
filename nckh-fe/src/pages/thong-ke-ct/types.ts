@@ -5,16 +5,16 @@ export interface Type {
   date: string; // Thêm thuộc tính date, kiểu có thể là string hoặc Date tùy vào dữ liệu bạn nhận được từ API
 }
 
-export interface ProductType {
+export interface LinkedType {
   value: string;
   label: string;
 }
 
-export interface PromotionFormProps {
+export interface FormProps {
   isAdd: boolean;
   action: 'Add' | 'Edit';
   form: any;
   onFinish: (values: any) => void;
   onReset: () => void;
-  product: ProductType[];
+  linked: LinkedType[];
 }

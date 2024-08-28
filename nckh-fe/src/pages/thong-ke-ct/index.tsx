@@ -3,14 +3,14 @@ import { Table, Button } from 'antd';
 import { get } from '../../utils/services/thongkect'; // Hàm gọi API
 
 // Định nghĩa kiểu dữ liệu cho các đối tượng trong bảng
-interface PromotionType {
+interface Type {
   key: number; // Key duy nhất cho mỗi hàng trong bảng
   name: string;
   date: string;
 }
 
 const ThongKeCT: React.FC = () => {
-  const [data, setData] = useState<PromotionType[]>([]); // State để lưu trữ dữ liệu
+  const [data, setData] = useState<Type[]>([]); // State để lưu trữ dữ liệu
 
   // Hàm gọi API và xử lý dữ liệu
   const fetchPromotions = async () => {

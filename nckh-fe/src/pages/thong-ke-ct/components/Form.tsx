@@ -1,15 +1,15 @@
 import { Col, Modal, Row } from "antd";
 import { Form, Input, Select } from "antd";
 import { X } from "react-feather";
-import { PromotionFormProps } from "../../thong-ke-ct/types";
+import { FormProps } from "../../thong-ke-ct/types";
 
-const PromotionForm: React.FC<PromotionFormProps> = ({
+const PromotionForm: React.FC<FormProps> = ({
   isAdd,
   action,
   form,
   onFinish,
   onReset,
-  product,
+  linked,
 }) => {
   return (
     <Modal
@@ -41,7 +41,7 @@ const PromotionForm: React.FC<PromotionFormProps> = ({
                 { required: true, message: "Tên ngân hàng không được để trống" },
               ]}
             >
-              <Select options={product} placeholder="Chọn ngân hàng" />
+              <Select options={linked} placeholder="Chọn ngân hàng" />
             </Form.Item>
           </Col>
         </Row>
