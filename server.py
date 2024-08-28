@@ -9,6 +9,8 @@ from datetime import datetime
 from pydantic import BaseModel
 from scapy.layers.inet import IP
 from collections import defaultdict
+from datetime import datetime
+
 app = FastAPI()
 
 app.add_middleware(
@@ -134,7 +136,6 @@ async def get_statistics():
     try:
         # Lấy danh sách tên các collection trong database
         collections = db.list_collection_names()
-
         # Đếm số lượng collection
         total_collections = len(collections)
         total_documents = collection.count_documents({})
@@ -155,7 +156,6 @@ async def get_statistics():
     try:
         # Truy vấn tất cả các document trong collection 'access_logs'
         documents = collection.find()
-
         # Tạo dictionary để lưu dữ liệu thống kê theo tháng
         month_data = defaultdict(int)
 
@@ -168,11 +168,42 @@ async def get_statistics():
                     created_at = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
                     month_year = created_at.strftime("%Y-%m")
                     month_data[month_year] += 1
-
         # Chuẩn bị dữ liệu để trả về cho frontend
         statistics = [{"name": month, "count": count} for month, count in month_data.items()]
-
         # Sắp xếp dữ liệu theo tháng
+        statistics.sort(key=lambda x: x["name"])
+        return {"data": statistics}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/v1/thongkect")
+async def get_statistics_details():
+    try:
+        # Truy vấn tất cả các document trong collection 'access_logs'
+        documents = collection.find()
+
+        # Danh sách để lưu các dữ liệu thống kê
+        statistics = []
+
+        for document in documents:
+            # Kiểm tra xem trường 'date' có tồn tại trong document hay không
+            if "date" in document:
+                # Chuyển đổi 'date' thành định dạng tháng/năm
+                created_at = document["date"]
+                if isinstance(created_at, str):
+                    created_at = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
+                    month_year = created_at.strftime("%Y-%m")
+                    # id = document["_id"]
+
+                    # Thêm bản ghi vào danh sách với 'name' và 'date'
+                    statistics.append({
+                        # "id": id,
+                        "name": month_year,
+                        "date": created_at.strftime("%Y-%m-%d %H:%M:%S")
+                    })
+
+        # Sắp xếp danh sách theo 'name' (tháng/năm)
         statistics.sort(key=lambda x: x["name"])
 
         return {"data": statistics}

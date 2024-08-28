@@ -1,37 +1,37 @@
 // services/thongkect.tsx
 import createApiServices from "../createApiServices";
-import { PromotionType } from "../../pages/thong-ke-ct/types";
+import { Type } from "../../pages/thong-ke-ct/types";
 
 const api = createApiServices();
 
-const getPromotion = () => {
+const get = () => {
   return api.makeAuthRequest({
-    url: "/api/v1/promotion",
+    url: "/api/v1/thongkect",
     method: "GET",
   });
 };
 
-const createPromotion = (data: { name: string; id_product: string }) => {
+const create = (data: { name: string; id_product: string }) => {
   return api.makeAuthRequest({
-    url: "/api/v1/promotion",
+    url: "/api/v1/create",
     method: "POST",
     data,
   });
 };
 
-const deletePromotion = (id: number) => {
-  return api.makeAuthRequest({
-    url: `/api/v1/promotion/${id}`,
-    method: "DELETE",
-  });
-};
+// const delete = (id: number) => {
+//   return api.makeAuthRequest({
+//     url: `/api/v1/delete/${id}`,
+//     method: "DELETE",
+//   });
+// };
 
-const updatePromotion = (id: number, data: { name: string; id_product: string }) => {
+const update = (id: number, data: { name: string; id_product: string }) => {
   return api.makeAuthRequest({
-    url: `/api/v1/promotion/${id}`,
+    url: `/api/v1/update/${id}`,
     method: "PUT",
     data,
   });
 };
 
-export { getPromotion, createPromotion, deletePromotion, updatePromotion };
+export { get, create, update };

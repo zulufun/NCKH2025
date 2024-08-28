@@ -1,20 +1,20 @@
-export interface PromotionType {
-    id: number;
-    name: string;
-    id_product: string;
-  }
-  
-  export interface ProductType {
-    value: string;
-    label: string;
-  }
-  
-  export interface PromotionFormProps {
-    isAdd: boolean;
-    action: 'Add' | 'Edit';
-    form: any;
-    onFinish: (values: any) => void;
-    onReset: () => void;
-    product: ProductType[];
-  }
-  
+export interface Type {
+  id: number;
+  name: string;
+  id_product: string;
+  date: string; // Thêm thuộc tính date, kiểu có thể là string hoặc Date tùy vào dữ liệu bạn nhận được từ API
+}
+
+export interface ProductType {
+  value: string;
+  label: string;
+}
+
+export interface PromotionFormProps {
+  isAdd: boolean;
+  action: 'Add' | 'Edit';
+  form: any;
+  onFinish: (values: any) => void;
+  onReset: () => void;
+  product: ProductType[];
+}
