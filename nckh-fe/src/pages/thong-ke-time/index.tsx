@@ -11,7 +11,6 @@ import MyPieChart from "../../components/PieChart/PieChart";
 // import PercentAreaChart from "../../components/PercentAreaChart/PercentAreaChart";
 
 
-
 const ThongKeTime: React.FC = () => {
   const [dataThongKe, setDataThongKe] = useState([]);
   const [dataScore, setDataScore] = useState([]);
@@ -72,7 +71,7 @@ const ThongKeTime: React.FC = () => {
               title: "Thống kê",
             },
             {
-              title: <span style={{ fontWeight: "bold" }}>Thống kê</span>,
+              title: <span style={{ fontWeight: "bold" }}>Thống kê chung</span>,
             },
           ]}
         />

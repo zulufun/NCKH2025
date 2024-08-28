@@ -38,7 +38,10 @@ const menuItems = [
         key: RouterLinks.THONG_KE_TIME,
         label: "Thống kê chung",
       },
-      
+      {
+        key: RouterLinks.THONG_KE_CT,
+        label: "Thống kê chi tiết",
+      },
     ],
   },
   

@@ -13,6 +13,7 @@ import ErrorPage from "./pages/error-page/ErrorPage";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ThongKeTime from "./pages/thong-ke-time";
+import ThongKeCT from "./pages/thong-ke-ct";
 
 
 function App() {
@@ -48,6 +49,11 @@ function App() {
                   <Route
                     path={RouterLinks.THONG_KE_TIME}
                     element={<ThongKeTime />}
+                    errorElement={<ErrorPage />}
+                  ></Route>
+                  <Route
+                    path={RouterLinks.THONG_KE_CT}
+                    element={<ThongKeCT />}
                     errorElement={<ErrorPage />}
                   ></Route>
                 </Route>
